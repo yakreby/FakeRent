@@ -28,6 +28,7 @@ namespace FakeRentAPI.Controllers
                 Summary = Summaries[Random.Shared.Next(Summaries.Length)]
             })
                 //Test for git update
+                //Test from github
             .ToArray();
         }
     }
