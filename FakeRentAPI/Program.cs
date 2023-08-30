@@ -15,6 +15,9 @@ namespace FakeRentAPI
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            //Mapping
+            builder.Services.AddAutoMapper(typeof(MappingConfig));
+
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
