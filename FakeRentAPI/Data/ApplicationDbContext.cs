@@ -9,6 +9,7 @@ namespace FakeRentAPI.Data
         {
         }
         public DbSet<House> Houses { get; set; }
+        public DbSet<HouseNumber> HouseNumbers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

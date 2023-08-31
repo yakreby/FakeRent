@@ -10,8 +10,10 @@ namespace FakeRentAPI
         {
             CreateMap<House,HouseDTO>();
             CreateMap<HouseDTO, House>();
-            CreateMap<House, HouseCreateDTO>().ReverseMap();
-            CreateMap<House, HouseUpdateDTO>().ReverseMap();
+            CreateMap<HouseNumber, HouseNumberDTO>();
+            CreateMap<HouseNumberDTO, HouseNumber>();
+            CreateMap<HouseNumber, HouseNumberCreateDTO>().ReverseMap();
+            CreateMap<HouseNumber, HouseNumberUpdateDTO>().ReverseMap();
         }
     }
 }

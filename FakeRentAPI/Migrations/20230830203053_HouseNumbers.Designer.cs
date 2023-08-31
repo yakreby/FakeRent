@@ -4,6 +4,7 @@ using FakeRentAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FakeRentAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230830203053_HouseNumbers")]
+    partial class HouseNumbers
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -67,7 +69,7 @@ namespace FakeRentAPI.Migrations
                         {
                             Id = 1,
                             Amenity = "",
-                            CreatedDate = new DateTime(2023, 8, 30, 23, 35, 11, 790, DateTimeKind.Local).AddTicks(680),
+                            CreatedDate = new DateTime(2023, 8, 30, 23, 30, 53, 207, DateTimeKind.Local).AddTicks(9437),
                             Details = "Something",
                             ImageUrl = "",
                             Name = "Rock Building",
@@ -80,7 +82,7 @@ namespace FakeRentAPI.Migrations
                         {
                             Id = 2,
                             Amenity = "",
-                            CreatedDate = new DateTime(2023, 8, 30, 23, 35, 11, 790, DateTimeKind.Local).AddTicks(692),
+                            CreatedDate = new DateTime(2023, 8, 30, 23, 30, 53, 207, DateTimeKind.Local).AddTicks(9453),
                             Details = "Excellent",
                             ImageUrl = "",
                             Name = "Sea House",
@@ -93,7 +95,7 @@ namespace FakeRentAPI.Migrations
                         {
                             Id = 3,
                             Amenity = "",
-                            CreatedDate = new DateTime(2023, 8, 30, 23, 35, 11, 790, DateTimeKind.Local).AddTicks(694),
+                            CreatedDate = new DateTime(2023, 8, 30, 23, 30, 53, 207, DateTimeKind.Local).AddTicks(9455),
                             Details = "Beatiful house",
                             ImageUrl = "",
                             Name = "Sky House",
@@ -123,7 +125,7 @@ namespace FakeRentAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("HouseNumbers");
+                    b.ToTable("HousesNumbers");
                 });
 #pragma warning restore 612, 618
         }

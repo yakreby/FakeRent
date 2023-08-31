@@ -1,4 +1,6 @@
 using FakeRentAPI.Data;
+using FakeRentAPI.Repository;
+using FakeRentAPI.Repository.IRepository;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -14,6 +16,10 @@ namespace FakeRentAPI
             builder.Services.AddControllers().AddNewtonsoftJson();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            //Repository injection
+            builder.Services.AddScoped<IHouseRepository, HouseRepository>();
+            builder.Services.AddScoped<IHouseNumberRepository, HouseNumberRepository>();
 
             //Mapping
             builder.Services.AddAutoMapper(typeof(MappingConfig));
