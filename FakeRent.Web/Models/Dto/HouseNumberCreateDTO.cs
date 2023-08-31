@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace FakeRentAPI.Models.Dto
+namespace FakeRent.Web.Models
 {
-    public class HouseNumberUpdateDTO
+    public class HouseNumberCreateDTO
     {
         [Required]
         public int HouseNo { get; set; }

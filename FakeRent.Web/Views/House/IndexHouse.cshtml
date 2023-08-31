@@ -1,0 +1,18 @@
+﻿@model List<HouseDTO>
+@{
+    ViewData["Title"] = "Houses";
+}
+
+<h1 class="text-center">Houses</h1>
+
+@foreach(var item in Model)
+{
+    <td>@item.Name</td>
+    <td>@item.Occupancy</td>
+    <td>@item.Rate</td>
+    <td>@item.SquareFeet</td>
+    <td>@item.Details</td>
+    <td>@item.Amenity</td>
+    <td>@item.ImageUrl</td>
+}
+

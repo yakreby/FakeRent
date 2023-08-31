@@ -13,14 +13,16 @@ namespace FakeRentAPI.Controllers
     {
         private readonly ILogger<FakeRentAPIController> _logger;
         private readonly IHouseNumberRepository _repository;
+        private readonly IHouseRepository _houseRepository;
         private readonly IMapper _mapper;
         protected APIResponse _response;
-        public HouseNumberController(ILogger<FakeRentAPIController> logger, IHouseNumberRepository repository, IMapper mapper)
+        public HouseNumberController(ILogger<FakeRentAPIController> logger, IHouseNumberRepository repository, IMapper mapper, IHouseRepository houseRepository)
         {
             _mapper = mapper;
             _logger = logger;
             _repository = repository;
             this._response = new();
+            _houseRepository = houseRepository;
         }
 
         [HttpGet]
@@ -90,10 +92,16 @@ namespace FakeRentAPI.Controllers
                     ModelState.AddModelError("", "House is alreadys exists");
                     return BadRequest(ModelState);
                 }
+                if(await _houseRepository.GetAsync(x => x.Id == createDTO.HouseId) == null)
+                {
+                    ModelState.AddModelError("", "House Id is invalid");
+                    return BadRequest(ModelState);
+                }
                 if (createDTO == null)
                 {
                     return BadRequest(createDTO);
                 }
+
                 HouseNumber houseNumber = _mapper.Map<HouseNumber>(createDTO);
                 await _repository.CreateAsync(houseNumber);
 
@@ -161,7 +169,11 @@ namespace FakeRentAPI.Controllers
                     _response.StatusCode = System.Net.HttpStatusCode.BadRequest;
                     return BadRequest(_response);
                 }
-
+                if (await _houseRepository.GetAsync(x => x.Id == updateDTO.HouseId) == null)
+                {
+                    ModelState.AddModelError("", "House Id is invalid");
+                    return BadRequest(ModelState);
+                }
                 HouseNumber model = _mapper.Map<HouseNumber>(updateDTO);
                 await _repository.UpdateAsync(model);
                 _response.StatusCode = System.Net.HttpStatusCode.NoContent;

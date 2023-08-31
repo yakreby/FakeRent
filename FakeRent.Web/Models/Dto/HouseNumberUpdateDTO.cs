@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace FakeRentAPI.Models.Dto
+namespace FakeRent.Web.Models
 {
     public class HouseNumberUpdateDTO
     {

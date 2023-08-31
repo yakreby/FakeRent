@@ -8,6 +8,9 @@ namespace FakeRentAPI.Models
         [Key,DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; }
         public int HouseNo { get; set; }
+        [ForeignKey("House")]
+        public int HouseId { get; set; }
+        public House? House { get; set; }
         public string? SpecialDetails { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime UpdatedDate { get; set; }

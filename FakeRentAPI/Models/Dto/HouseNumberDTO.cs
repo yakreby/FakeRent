@@ -6,6 +6,8 @@ namespace FakeRentAPI.Models.Dto
     {
         [Required]
         public int HouseNo { get; set; }
+        [Required]
+        public int HouseId { get; set; }
         public string? SpecialDetails { get; set; }
     }
 }
