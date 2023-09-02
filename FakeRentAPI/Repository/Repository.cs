@@ -14,7 +14,7 @@ namespace FakeRentAPI.Repository
         public Repository(ApplicationDbContext applicationDbContext)
         {
             _applicationDbContext = applicationDbContext;
-            this.dbSet = _applicationDbContext.Set<T>();
+			this.dbSet = _applicationDbContext.Set<T>();
         }
         public async Task CreateAsync(T entity)
         {
@@ -22,7 +22,7 @@ namespace FakeRentAPI.Repository
             await SaveAsync();
         }
 
-        public async Task<T> GetAsync(Expression<Func<T, bool>> filter = null, bool tracked = true)
+        public async Task<T> GetAsync(Expression<Func<T, bool>> filter = null, bool tracked = true, string? includeProperties = null)
         {
             IQueryable<T> query = dbSet;
             if (!tracked)
@@ -33,17 +33,31 @@ namespace FakeRentAPI.Repository
             {
                 query = query.Where(filter);
             }
+            if(includeProperties != null)
+            {
+                foreach (var property in includeProperties.Split(new char[] {','}, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(property);
+                }
+            }
             return await query.FirstOrDefaultAsync();
         }
 
-        public async Task<List<T>> GetAllAsync(Expression<Func<T, bool>> filter = null)
+        public async Task<List<T>> GetAllAsync(Expression<Func<T, bool>> filter = null, string? includeProperties = null)
         {
             IQueryable<T> query = dbSet;
             if (filter != null)
             {
                 query = query.Where(filter);
             }
-            return await query.ToListAsync();
+			if (includeProperties != null)
+			{
+				foreach (var property in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+				{
+					query = query.Include(property);
+				}   
+			}
+			return await query.ToListAsync();
         }
 
         public async Task RemoveAsync(T entity)
@@ -63,5 +77,5 @@ namespace FakeRentAPI.Repository
             dbSet.Update(entity);
             await SaveAsync();
         }
-    }
+	}
 }

@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using System.Text;
 using System.Text.Json.Serialization;
 using FakeRent.Utility;
+using Humanizer;
 
 namespace FakeRent.Web.Services
 {
@@ -60,6 +61,27 @@ namespace FakeRent.Web.Services
                 //When we receive the API response we need to extract the API content
                 var apiContent = await httpResponseMessage.Content.ReadAsStringAsync();
                 //Deserializing object we get from response content
+                try
+                {
+                    APIResponse ApiResponse = JsonConvert.DeserializeObject<APIResponse>(apiContent);
+                    //If we got an error message in api, should be modify IsSuccess's value
+                    if(httpResponseMessage.StatusCode == System.Net.HttpStatusCode.BadRequest ||
+                        httpResponseMessage.StatusCode == System.Net.HttpStatusCode.NotFound)
+                    {
+                        httpResponseMessage.StatusCode = System.Net.HttpStatusCode.BadRequest;
+                        ApiResponse.IsSuccess = false;
+                        var res = JsonConvert.SerializeObject(ApiResponse);
+                        //We cannot return dto directly, it must be the type T we already defined before
+                        var returnObj = JsonConvert.DeserializeObject<T>(res);
+                        return returnObj;
+                    }
+                }
+                catch (Exception)
+                {
+                    //If the response object is not a APIResponse type
+                    var exceptionResponse = JsonConvert.DeserializeObject<T>(apiContent);
+                    return exceptionResponse;
+                }
                 var APIResponse = JsonConvert.DeserializeObject<T>(apiContent);
                 return APIResponse;
             }

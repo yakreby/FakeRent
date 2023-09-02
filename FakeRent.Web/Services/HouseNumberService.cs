@@ -4,26 +4,25 @@ using FakeRent.Web.Services.IServices;
 
 namespace FakeRent.Web.Services
 {
-    //Base service make possible to call the API, so we implement that
-    public class HouseService : BaseService, IHouseService
+    public class HouseNumberService : BaseService, IHouseNumberService
     {
         private readonly string apiURl;
         private readonly IHttpClientFactory _httpClientFactory;
         //Base service requires HttpClientFactory, that why we use :base statement
-        public HouseService(IHttpClientFactory httpClientFactory, IConfiguration configuration) : base(httpClientFactory)
+        public HouseNumberService(IHttpClientFactory httpClientFactory, IConfiguration configuration):base(httpClientFactory)
         {
             _httpClientFactory = httpClientFactory;
             //Getting url from appsettings.json
             apiURl = configuration.GetValue<string>("ServiceUrls:FakeRentAPI");
 
         }
-        public Task<T> CreateAsync<T>(HouseCreateDTO houseCreateDTO)
+        public Task<T> CreateAsync<T>(HouseNumberCreateDTO houseNumberCreateDTO)
         {
             return SendAsync<T>(new APIRequest()
             {
                 ApiType = StaticDetails.ApiType.POST,
-                Data = houseCreateDTO,
-                Url = apiURl + "/api/FakeRentAPI/"
+                Data = houseNumberCreateDTO,
+                Url = apiURl + "/api/HouseNumber/"
             });
         }
 
@@ -32,7 +31,7 @@ namespace FakeRent.Web.Services
             return SendAsync<T>(new APIRequest()
             {
                 ApiType = StaticDetails.ApiType.DELETE,
-                Url = apiURl + "/api/FakeRentAPI/" + id
+                Url = apiURl + "/api/HouseNumber/" + id
             });
         }
 
@@ -41,7 +40,7 @@ namespace FakeRent.Web.Services
             return SendAsync<T>(new APIRequest()
             {
                 ApiType = StaticDetails.ApiType.GET,
-                Url = apiURl + "/api/FakeRentAPI/"
+                Url = apiURl + "/api/HouseNumber/"
             });
         }
 
@@ -50,18 +49,18 @@ namespace FakeRent.Web.Services
             return SendAsync<T>(new APIRequest()
             {
                 ApiType = StaticDetails.ApiType.GET,
-                Url = apiURl + "/api/FakeRentAPI/" + id
+                Url = apiURl + "/api/HouseNumber/" + id
             });
         }
 
-        public Task<T> UpdateAsync<T>(HouseUpdateDTO houseUpdateDTO)
+        public Task<T> UpdateAsync<T>(HouseNumberUpdateDTO houseNumberUpdateDTO)
         {
             return SendAsync<T>(new APIRequest()
             {
                 ApiType = StaticDetails.ApiType.PUT,
-                Data = houseUpdateDTO,
+                Data = houseNumberUpdateDTO,
                 //Id in here is optional
-                Url = apiURl + "/api/FakeRentAPI/"+houseUpdateDTO.Id
+                Url = apiURl + "/api/HouseNumber/" + houseNumberUpdateDTO.HouseNo
             });
         }
     }

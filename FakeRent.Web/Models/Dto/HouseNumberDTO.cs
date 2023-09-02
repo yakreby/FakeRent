@@ -9,5 +9,6 @@ namespace FakeRent.Web.Models
         [Required]
         public int HouseId { get; set; }
         public string? SpecialDetails { get; set; }
+        public HouseDTO? House { get; set; }
     }
 }

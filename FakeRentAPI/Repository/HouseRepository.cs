@@ -1,8 +1,6 @@
 ﻿using FakeRentAPI.Data;
 using FakeRentAPI.Models;
 using FakeRentAPI.Repository.IRepository;
-using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
 
 namespace FakeRentAPI.Repository
 {

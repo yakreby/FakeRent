@@ -9,6 +9,7 @@ namespace FakeRentAPI.Models.Dto
         [MaxLength(30)]
         public string? Name { get; set; }
         public string? Details { get; set; }
+        [Required]
         public double Rate { get; set; }
         public int Occupancy { get; set; }
         public int SquareFeet { get; set; }

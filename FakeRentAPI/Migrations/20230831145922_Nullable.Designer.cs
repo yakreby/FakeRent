@@ -4,6 +4,7 @@ using FakeRentAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FakeRentAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230831145922_Nullable")]
+    partial class Nullable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -67,9 +69,9 @@ namespace FakeRentAPI.Migrations
                         {
                             Id = 1,
                             Amenity = "",
-                            CreatedDate = new DateTime(2023, 9, 2, 12, 33, 45, 497, DateTimeKind.Local).AddTicks(9961),
+                            CreatedDate = new DateTime(2023, 8, 31, 17, 59, 22, 628, DateTimeKind.Local).AddTicks(6904),
                             Details = "Something",
-                            ImageUrl = "https://dotnetmastery.com/bluevillaimages/villa1.jpg",
+                            ImageUrl = "",
                             Name = "Rock Building",
                             Occupancy = 4,
                             Rate = 5.0,
@@ -80,9 +82,9 @@ namespace FakeRentAPI.Migrations
                         {
                             Id = 2,
                             Amenity = "",
-                            CreatedDate = new DateTime(2023, 9, 2, 12, 33, 45, 497, DateTimeKind.Local).AddTicks(9969),
+                            CreatedDate = new DateTime(2023, 8, 31, 17, 59, 22, 628, DateTimeKind.Local).AddTicks(6914),
                             Details = "Excellent",
-                            ImageUrl = "https://dotnetmastery.com/bluevillaimages/villa2.jpg",
+                            ImageUrl = "",
                             Name = "Sea House",
                             Occupancy = 12,
                             Rate = 4.0,
@@ -93,9 +95,9 @@ namespace FakeRentAPI.Migrations
                         {
                             Id = 3,
                             Amenity = "",
-                            CreatedDate = new DateTime(2023, 9, 2, 12, 33, 45, 497, DateTimeKind.Local).AddTicks(9971),
+                            CreatedDate = new DateTime(2023, 8, 31, 17, 59, 22, 628, DateTimeKind.Local).AddTicks(6916),
                             Details = "Beatiful house",
-                            ImageUrl = "https://dotnetmastery.com/bluevillaimages/villa3.jpg",
+                            ImageUrl = "",
                             Name = "Sky House",
                             Occupancy = 14,
                             Rate = 2.0,
@@ -106,7 +108,7 @@ namespace FakeRentAPI.Migrations
 
             modelBuilder.Entity("FakeRentAPI.Models.HouseNumber", b =>
                 {
-                    b.Property<int>("HouseNo")
+                    b.Property<int>("Id")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedDate")
@@ -115,13 +117,16 @@ namespace FakeRentAPI.Migrations
                     b.Property<int>("HouseId")
                         .HasColumnType("int");
 
+                    b.Property<int>("HouseNo")
+                        .HasColumnType("int");
+
                     b.Property<string>("SpecialDetails")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("HouseNo");
+                    b.HasKey("Id");
 
                     b.HasIndex("HouseId");
 

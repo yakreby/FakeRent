@@ -89,7 +89,7 @@ namespace FakeRentAPI.Controllers
             {
                 if (await _repository.GetAsync(x => x.Name.ToLower() == createDTO.Name.ToLower()) != null)
                 {
-                    ModelState.AddModelError("", "House is alreadys exists");
+                    ModelState.AddModelError("ErrorMessages", "House is alreadys exists");
                     return BadRequest(ModelState);
                 }
                 if (createDTO == null)

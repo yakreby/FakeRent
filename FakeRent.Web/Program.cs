@@ -15,9 +15,12 @@ namespace FakeRent.Web
             //Mapping
             builder.Services.AddAutoMapper(typeof(MappingConfig));
 
-            //Service DI
+            //House Service DI
             builder.Services.AddHttpClient<IHouseService, HouseService>();
             builder.Services.AddScoped<IHouseService, HouseService>();
+            //HouseNumber Service DI
+            builder.Services.AddHttpClient<IHouseNumberService, HouseNumberService>();
+            builder.Services.AddScoped<IHouseNumberService, HouseNumberService>();
 
             var app = builder.Build();
             // Configure the HTTP request pipeline.
@@ -32,7 +35,7 @@ namespace FakeRent.Web
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            //app.UseSession();
             app.UseAuthorization();
 
             app.MapControllerRoute(
