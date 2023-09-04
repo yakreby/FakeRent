@@ -2,6 +2,7 @@
 using FakeRent.Utility;
 using FakeRent.Web.Models;
 using FakeRent.Web.Services.IServices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Collections.Generic;
@@ -29,6 +30,7 @@ namespace FakeRent.Web.Controllers
             return View(list);
         }
 
+        [Authorize(Roles = StaticDetails.Role_Admin)]
         public async Task<IActionResult> CreateHouse()
         {
             return View();
@@ -36,6 +38,7 @@ namespace FakeRent.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = StaticDetails.Role_Admin)]
         public async Task<IActionResult> CreateHouse(HouseCreateDTO houseCreateDTO)
         {
             if (ModelState.IsValid)
@@ -50,6 +53,7 @@ namespace FakeRent.Web.Controllers
             return View(houseCreateDTO);
         }
 
+        [Authorize(Roles = StaticDetails.Role_Admin)]
         public async Task<IActionResult> UpdateHouse(int houseId)
         {
             var response = await _houseService.GetAsync<APIResponse>(houseId);
@@ -63,6 +67,7 @@ namespace FakeRent.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = StaticDetails.Role_Admin)]
         public async Task<IActionResult> UpdateHouse(HouseUpdateDTO houseUpdateDTO)
         {
             if (ModelState.IsValid)
@@ -78,6 +83,7 @@ namespace FakeRent.Web.Controllers
             return View(houseUpdateDTO);
         }
 
+        [Authorize(Roles = StaticDetails.Role_Admin)]
         public async Task<IActionResult> DeleteHouse(int houseId)
         {
             var response = await _houseService.GetAsync<APIResponse>(houseId);
@@ -91,6 +97,7 @@ namespace FakeRent.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = StaticDetails.Role_Admin)]
         public async Task<IActionResult> DeleteHouse(HouseDTO houseDTO)
         {
             var response = await _houseService.DeleteAsync<APIResponse>(houseDTO.Id);

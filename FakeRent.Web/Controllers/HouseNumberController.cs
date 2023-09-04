@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using FakeRent.Utility;
 using FakeRent.Web.Models;
 using FakeRent.Web.Models.ViewModels;
 using FakeRent.Web.Services.IServices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
@@ -33,6 +35,7 @@ namespace FakeRent.Web.Controllers
             return View(list);
         }
 
+        [Authorize(Roles = StaticDetails.Role_Admin)]
         public async Task<IActionResult> CreateHouseNumber()
         {
             HouseNumberCreateViewModel createViewModel = new();
@@ -51,6 +54,7 @@ namespace FakeRent.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = StaticDetails.Role_Admin)]
         public async Task<IActionResult> CreateHouseNumber(HouseNumberCreateViewModel model)
         {
             if (ModelState.IsValid)
@@ -81,6 +85,7 @@ namespace FakeRent.Web.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = StaticDetails.Role_Admin)]
         public async Task<IActionResult> UpdateHouseNumber(int houseNo)
         {
             HouseNumberUpdateViewModel updateViewModel = new();
@@ -106,6 +111,7 @@ namespace FakeRent.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = StaticDetails.Role_Admin)]
         public async Task<IActionResult> UpdateHouseNumber(HouseNumberUpdateViewModel updateViewModel)
         {
             if (ModelState.IsValid)
@@ -136,6 +142,7 @@ namespace FakeRent.Web.Controllers
             return View(updateViewModel);
         }
 
+        [Authorize(Roles = StaticDetails.Role_Admin)]
         public async Task<IActionResult> DeleteHouseNumber(int houseNo)
         {
             HouseNumberDeleteViewModel deleteViewModel = new();
@@ -161,6 +168,7 @@ namespace FakeRent.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = StaticDetails.Role_Admin)]
         public async Task<IActionResult> DeleteHouseNumber(HouseNumberDeleteViewModel deleteViewModel)
         {
             var response = await _houseNumberService.DeleteAsync<APIResponse>(deleteViewModel.HouseNumber.HouseNo);
