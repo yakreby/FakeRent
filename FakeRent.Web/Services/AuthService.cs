@@ -19,7 +19,7 @@ namespace FakeRent.Web.Services
             {
                 ApiType = StaticDetails.ApiType.POST,
                 Data = loginRequestDTO,
-                Url = authUrl + "/api/UserAuth/login"
+                Url = authUrl + "/api/v1/UserAuth/login"
             });
         }
 
@@ -29,7 +29,7 @@ namespace FakeRent.Web.Services
             {
                 ApiType = StaticDetails.ApiType.POST,
                 Data = registerationRequestDTO,
-                Url = authUrl + "/api/UserAuth/register"
+                Url = authUrl + "/api/v1/UserAuth/register"
             });
         }
     }

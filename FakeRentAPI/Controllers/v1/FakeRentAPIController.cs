@@ -1,38 +1,39 @@
 ﻿using AutoMapper;
-using FakeRentAPI.Models.Dto;
+using FakeRent.Utility;
+using FakeRentAPI.Data;
 using FakeRentAPI.Models;
+using FakeRentAPI.Models.Dto;
 using FakeRentAPI.Repository.IRepository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
-namespace FakeRentAPI.Controllers
+namespace FakeRentAPI.Controllers.v1
 {
-    [Route("api/HouseNumber")]
+    [Route("api/v{version:apiVersion}/FakeRentAPI")]
     [ApiController]
-    public class HouseNumberController : Controller
+    public class FakeRentAPIController : ControllerBase
     {
         private readonly ILogger<FakeRentAPIController> _logger;
-        private readonly IHouseNumberRepository _houseNumberRepository;
-        private readonly IHouseRepository _houseRepository;
+        private readonly IHouseRepository _repository;
         private readonly IMapper _mapper;
         protected APIResponse _response;
-        public HouseNumberController(ILogger<FakeRentAPIController> logger, IHouseNumberRepository houseNumberRepository, IMapper mapper, IHouseRepository houseRepository)
+        public FakeRentAPIController(ILogger<FakeRentAPIController> logger, IHouseRepository repository, IMapper mapper)
         {
             _mapper = mapper;
             _logger = logger;
-            _houseNumberRepository = houseNumberRepository;
-            this._response = new();
-            _houseRepository = houseRepository;
+            _repository = repository;
+            _response = new();
         }
 
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<APIResponse>> GetHouseNumbers()
+        public async Task<ActionResult<APIResponse>> GetHouses()
         {
             try
             {
-                IEnumerable<HouseNumber> houseNumbers = await _houseNumberRepository.GetAllAsync(includeProperties: "House");
-                _response.Result = _mapper.Map<List<HouseNumberDTO>>(houseNumbers);
+                IEnumerable<House> houses = await _repository.GetAllAsync();
+                _response.Result = _mapper.Map<List<HouseDTO>>(houses);
                 _response.StatusCode = System.Net.HttpStatusCode.OK;
                 return Ok(_response);
             }
@@ -47,10 +48,10 @@ namespace FakeRentAPI.Controllers
             return _response;
         }
 
-        [HttpGet("{id:int}", Name = "CreateHouseNumber")]
+        [HttpGet("{id:int}", Name = "GetHouse")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<APIResponse>> GetHouseNumber(int id)
+        public async Task<ActionResult<APIResponse>> GetHouse(int id)
         {
             try
             {
@@ -59,13 +60,13 @@ namespace FakeRentAPI.Controllers
                     _response.StatusCode = System.Net.HttpStatusCode.BadRequest;
                     return BadRequest(_response);
                 }
-                var house = await _houseNumberRepository.GetAsync(x => x.HouseNo == id);
+                var house = await _repository.GetAsync(x => x.Id == id);
                 if (house == null)
                 {
                     _response.StatusCode = System.Net.HttpStatusCode.NotFound;
                     return NotFound();
                 }
-                _response.Result = _mapper.Map<HouseNumberDTO>(house);
+                _response.Result = _mapper.Map<HouseDTO>(house);
                 _response.StatusCode = System.Net.HttpStatusCode.OK;
                 return Ok(_response);
             }
@@ -80,35 +81,31 @@ namespace FakeRentAPI.Controllers
             return _response;
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<APIResponse>> CreateHouseNumber([FromBody] HouseNumberCreateDTO createDTO)
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<APIResponse>> CreateHouse([FromBody] HouseCreateDTO createDTO)
         {
             try
             {
-                if (await _houseNumberRepository.GetAsync(x => x.HouseNo == createDTO.HouseNo) != null)
+                if (await _repository.GetAsync(x => x.Name.ToLower() == createDTO.Name.ToLower()) != null)
                 {
                     ModelState.AddModelError("ErrorMessages", "House is alreadys exists");
-                    return BadRequest(ModelState);
-                }
-                if(await _houseRepository.GetAsync(x => x.Id == createDTO.HouseId) == null)
-                {
-                    ModelState.AddModelError("ErrorMessages", "House Id is invalid");
                     return BadRequest(ModelState);
                 }
                 if (createDTO == null)
                 {
                     return BadRequest(createDTO);
                 }
+                House house = _mapper.Map<House>(createDTO);
+                await _repository.CreateAsync(house);
 
-                HouseNumber houseNumber = _mapper.Map<HouseNumber>(createDTO);
-                await _houseNumberRepository.CreateAsync(houseNumber);
-
-                _response.Result = _mapper.Map<HouseNumberDTO>(houseNumber);
+                _response.Result = _mapper.Map<HouseDTO>(house);
                 _response.StatusCode = System.Net.HttpStatusCode.Created;
-                return CreatedAtRoute("GetHouse", new { id = houseNumber.HouseNo }, _response);
+                return CreatedAtRoute("GetHouse", new { id = house.Id }, _response);
             }
             catch (Exception ex)
             {
@@ -121,11 +118,12 @@ namespace FakeRentAPI.Controllers
             return _response;
         }
 
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [HttpDelete("{id:int}", Name = "DeleteHouseNumber")]
-        public async Task<ActionResult<APIResponse>> DeleteHouseNumber(int id)
+        [HttpDelete("{id:int}", Name = "DeleteHouse")]
+        public async Task<ActionResult<APIResponse>> DeleteHouse(int id)
         {
             try
             {
@@ -135,14 +133,14 @@ namespace FakeRentAPI.Controllers
                     return BadRequest(_response);
                 }
 
-                var house = await _houseNumberRepository.GetAsync(x => x.HouseNo == id);
+                var house = await _repository.GetAsync(x => x.Id == id);
                 if (house == null)
                 {
                     _response.StatusCode = System.Net.HttpStatusCode.NotFound;
                     return NotFound();
                 }
 
-                await _houseNumberRepository.RemoveAsync(house);
+                await _repository.RemoveAsync(house);
                 _response.StatusCode = System.Net.HttpStatusCode.NoContent;
                 _response.IsSuccess = true;
                 return Ok(_response);
@@ -158,25 +156,22 @@ namespace FakeRentAPI.Controllers
             return _response;
         }
 
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [HttpPut("{id:int}", Name = "UpdateHouseNumber")]
-        public async Task<ActionResult<APIResponse>> UpdateHouseNumber(int id, [FromBody] HouseNumberUpdateDTO updateDTO)
+        [HttpPut("{id:int}", Name = "UpdateHouse")]
+        public async Task<ActionResult<APIResponse>> UpdateHouse(int id, [FromBody] HouseUpdateDTO updateDTO)
         {
             try
             {
-                if (updateDTO == null)
+                if (updateDTO == null || id != updateDTO.Id)
                 {
                     _response.StatusCode = System.Net.HttpStatusCode.BadRequest;
                     return BadRequest(_response);
                 }
-                if (await _houseRepository.GetAsync(x => x.Id == updateDTO.HouseId) == null)
-                {
-                    ModelState.AddModelError("ErrorMessages", "House Id is invalid");
-                    return BadRequest(ModelState);
-                }
-                HouseNumber model = _mapper.Map<HouseNumber>(updateDTO);
-                await _houseNumberRepository.UpdateAsync(model);
+
+                House model = _mapper.Map<House>(updateDTO);
+                await _repository.UpdateAsync(model);
                 _response.StatusCode = System.Net.HttpStatusCode.NoContent;
                 _response.IsSuccess = true;
                 return Ok(_response);
@@ -193,11 +188,12 @@ namespace FakeRentAPI.Controllers
             return _response;
         }
 
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [HttpPatch("{id:int}", Name = "UpdatePartialHouseNumber")]
-        public async Task<IActionResult> UpdatePartialHouseNumber(int id, JsonPatchDocument<HouseNumberUpdateDTO> patchDTO)
+        [HttpPatch("{id:int}", Name = "UpdatePartialHouse")]
+        public async Task<IActionResult> UpdatePartialHouse(int id, JsonPatchDocument<HouseUpdateDTO> patchDTO)
         {
             if (patchDTO == null || id == 0)
             {
@@ -205,8 +201,8 @@ namespace FakeRentAPI.Controllers
                 return BadRequest(_response);
             }
 
-            var house = await _houseNumberRepository.GetAsync(x => x.HouseNo == id, tracked: false);
-            HouseNumberUpdateDTO houseDTO = _mapper.Map<HouseNumberUpdateDTO>(house);
+            var house = await _repository.GetAsync(x => x.Id == id, tracked: false);
+            HouseUpdateDTO houseDTO = _mapper.Map<HouseUpdateDTO>(house);
             if (house == null)
             {
                 _response.StatusCode = System.Net.HttpStatusCode.BadRequest;
@@ -215,8 +211,8 @@ namespace FakeRentAPI.Controllers
 
             patchDTO.ApplyTo(houseDTO, ModelState);
 
-            HouseNumber model = _mapper.Map<HouseNumber>(houseDTO);
-            await _houseNumberRepository.UpdateAsync(model);
+            House model = _mapper.Map<House>(houseDTO);
+            await _repository.UpdateAsync(model);
 
             if (!ModelState.IsValid)
             {

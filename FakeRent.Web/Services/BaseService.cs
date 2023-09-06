@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using FakeRent.Utility;
 using Humanizer;
+using System.Net.Http.Headers;
 
 namespace FakeRent.Web.Services
 {
@@ -53,6 +54,12 @@ namespace FakeRent.Web.Services
                         break;
                 }
 
+                //Controlling APIRequest object's token
+                if (!string.IsNullOrEmpty(apiRequest.Token))
+                {
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiRequest.Token);
+                }
+
                 //When we send request, we will receive a response back. We will set that to be null by default
                 HttpResponseMessage httpResponseMessage = null;
                 //Calling the API end point and passing the message that we configured 
@@ -65,8 +72,8 @@ namespace FakeRent.Web.Services
                 {
                     APIResponse ApiResponse = JsonConvert.DeserializeObject<APIResponse>(apiContent);
                     //If we got an error message in api, should be modify IsSuccess's value
-                    if(httpResponseMessage.StatusCode == System.Net.HttpStatusCode.BadRequest ||
-                        httpResponseMessage.StatusCode == System.Net.HttpStatusCode.NotFound)
+                    if(ApiResponse!=null && (httpResponseMessage.StatusCode == System.Net.HttpStatusCode.BadRequest ||
+                        httpResponseMessage.StatusCode == System.Net.HttpStatusCode.NotFound))
                     {
                         httpResponseMessage.StatusCode = System.Net.HttpStatusCode.BadRequest;
                         ApiResponse.IsSuccess = false;

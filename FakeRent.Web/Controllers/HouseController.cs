@@ -22,7 +22,7 @@ namespace FakeRent.Web.Controllers
         public async Task<IActionResult> IndexHouse()
         {
             List<HouseDTO> list = new();
-            var response = await _houseService.GetAllAsync<APIResponse>();
+            var response = await _houseService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(StaticDetails.SessionToken));
             if (response != null && response.IsSuccess)
             {
                 list = JsonConvert.DeserializeObject<List<HouseDTO>>(Convert.ToString(response.Result));
@@ -30,7 +30,7 @@ namespace FakeRent.Web.Controllers
             return View(list);
         }
 
-        [Authorize(Roles = StaticDetails.Role_Admin)]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateHouse()
         {
             return View();
@@ -38,12 +38,12 @@ namespace FakeRent.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = StaticDetails.Role_Admin)]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateHouse(HouseCreateDTO houseCreateDTO)
         {
             if (ModelState.IsValid)
             {
-                var response = await _houseService.CreateAsync<APIResponse>(houseCreateDTO);
+                var response = await _houseService.CreateAsync<APIResponse>(houseCreateDTO, HttpContext.Session.GetString(StaticDetails.SessionToken));
                 if (response != null && response.IsSuccess)
                 {
                     TempData["success"] = "House created successfully";
@@ -53,10 +53,10 @@ namespace FakeRent.Web.Controllers
             return View(houseCreateDTO);
         }
 
-        [Authorize(Roles = StaticDetails.Role_Admin)]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateHouse(int houseId)
         {
-            var response = await _houseService.GetAsync<APIResponse>(houseId);
+            var response = await _houseService.GetAsync<APIResponse>(houseId, HttpContext.Session.GetString(StaticDetails.SessionToken));
             if (response != null && response.IsSuccess)
             {
                 HouseDTO model = JsonConvert.DeserializeObject<HouseDTO>(Convert.ToString(response.Result));
@@ -67,12 +67,12 @@ namespace FakeRent.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = StaticDetails.Role_Admin)]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateHouse(HouseUpdateDTO houseUpdateDTO)
         {
             if (ModelState.IsValid)
             {
-                var response = await _houseService.UpdateAsync<APIResponse>(houseUpdateDTO);
+                var response = await _houseService.UpdateAsync<APIResponse>(houseUpdateDTO, HttpContext.Session.GetString(StaticDetails.SessionToken));
                 if (response != null && response.IsSuccess)
                 {
                     TempData["success"] = "House updated successfully";
@@ -83,10 +83,10 @@ namespace FakeRent.Web.Controllers
             return View(houseUpdateDTO);
         }
 
-        [Authorize(Roles = StaticDetails.Role_Admin)]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteHouse(int houseId)
         {
-            var response = await _houseService.GetAsync<APIResponse>(houseId);
+            var response = await _houseService.GetAsync<APIResponse>(houseId, HttpContext.Session.GetString(StaticDetails.SessionToken));
             if (response != null && response.IsSuccess)
             {
                 HouseDTO model = JsonConvert.DeserializeObject<HouseDTO>(Convert.ToString(response.Result));
@@ -97,10 +97,10 @@ namespace FakeRent.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = StaticDetails.Role_Admin)]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteHouse(HouseDTO houseDTO)
         {
-            var response = await _houseService.DeleteAsync<APIResponse>(houseDTO.Id);
+            var response = await _houseService.DeleteAsync<APIResponse>(houseDTO.Id, HttpContext.Session.GetString(StaticDetails.SessionToken));
             if (response != null && response.IsSuccess)
             {
                 TempData["success"] = "House deleted successfully";

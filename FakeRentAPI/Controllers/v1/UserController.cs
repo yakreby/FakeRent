@@ -4,10 +4,11 @@ using FakeRentAPI.Repository.IRepository;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
-namespace FakeRentAPI.Controllers
+namespace FakeRentAPI.Controllers.v1
 {
-    [Route("api/UserAuth")]
+    [Route("api/v{version:apiVersion}/UserAuth")]
     [ApiController]
+    [ApiVersionNeutral]
     public class UserController : Controller
     {
         private readonly IUserRepository _userRepository;
@@ -15,14 +16,15 @@ namespace FakeRentAPI.Controllers
         public UserController(IUserRepository userRepository)
         {
             _userRepository = userRepository;
-            this._response = new();
+            _response = new();
         }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequestDTO loginRequestDTO)
         {
             var loginResponse = await _userRepository.Login(loginRequestDTO);
-            if (loginResponse.User == null || string.IsNullOrEmpty(loginResponse.Token)) {
+            if (loginResponse.User == null || string.IsNullOrEmpty(loginResponse.Token))
+            {
                 _response.StatusCode = HttpStatusCode.BadRequest;
                 _response.IsSuccess = false;
                 _response.ErrorMessages.Add("Username or password is incorrect");
@@ -38,7 +40,7 @@ namespace FakeRentAPI.Controllers
         public async Task<IActionResult> Register([FromBody] RegisterationRequestDTO registerationRequestDTO)
         {
             bool IsUserUnique = _userRepository.IsUniqueUser(registerationRequestDTO.UserName);
-            if(IsUserUnique == false)
+            if (IsUserUnique == false)
             {
                 _response.StatusCode = HttpStatusCode.BadRequest;
                 _response.IsSuccess = false;
@@ -47,7 +49,7 @@ namespace FakeRentAPI.Controllers
             }
 
             var user = _userRepository.Register(registerationRequestDTO);
-            if(user == null)
+            if (user == null)
             {
                 _response.StatusCode = HttpStatusCode.BadRequest;
                 _response.IsSuccess = false;

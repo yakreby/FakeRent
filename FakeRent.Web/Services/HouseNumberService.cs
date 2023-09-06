@@ -16,51 +16,56 @@ namespace FakeRent.Web.Services
             apiURl = configuration.GetValue<string>("ServiceUrls:FakeRentAPI");
 
         }
-        public Task<T> CreateAsync<T>(HouseNumberCreateDTO houseNumberCreateDTO)
+        public Task<T> CreateAsync<T>(HouseNumberCreateDTO houseNumberCreateDTO, string token)
         {
             return SendAsync<T>(new APIRequest()
             {
                 ApiType = StaticDetails.ApiType.POST,
                 Data = houseNumberCreateDTO,
-                Url = apiURl + "/api/HouseNumber/"
+                Url = apiURl + "/api/v1/HouseNumber",
+                Token = token
             });
         }
 
-        public Task<T> DeleteAsync<T>(int id)
+        public Task<T> DeleteAsync<T>(int id, string token)
         {
             return SendAsync<T>(new APIRequest()
             {
                 ApiType = StaticDetails.ApiType.DELETE,
-                Url = apiURl + "/api/HouseNumber/" + id
+                Url = apiURl + "/api/v1/HouseNumber/" + id,
+                Token = token
             });
         }
 
-        public Task<T> GetAllAsync<T>()
+        public Task<T> GetAllAsync<T>(string token)
         {
             return SendAsync<T>(new APIRequest()
             {
                 ApiType = StaticDetails.ApiType.GET,
-                Url = apiURl + "/api/HouseNumber/"
+                Url = apiURl + "/api/v1/HouseNumber",
+                Token = token
             });
         }
 
-        public Task<T> GetAsync<T>(int id)
+        public Task<T> GetAsync<T>(int id, string token)
         {
             return SendAsync<T>(new APIRequest()
             {
                 ApiType = StaticDetails.ApiType.GET,
-                Url = apiURl + "/api/HouseNumber/" + id
+                Url = apiURl + "/api/v1/HouseNumber/" + id,
+                Token = token
             });
         }
 
-        public Task<T> UpdateAsync<T>(HouseNumberUpdateDTO houseNumberUpdateDTO)
+        public Task<T> UpdateAsync<T>(HouseNumberUpdateDTO houseNumberUpdateDTO, string token)
         {
             return SendAsync<T>(new APIRequest()
             {
                 ApiType = StaticDetails.ApiType.PUT,
                 Data = houseNumberUpdateDTO,
                 //Id in here is optional
-                Url = apiURl + "/api/HouseNumber/" + houseNumberUpdateDTO.HouseNo
+                Url = apiURl + "/api/v1/HouseNumber/" + houseNumberUpdateDTO.HouseNo,
+                Token = token
             });
         }
     }

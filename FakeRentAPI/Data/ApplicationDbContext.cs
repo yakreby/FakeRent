@@ -1,19 +1,24 @@
-﻿using FakeRentAPI.Models;
+﻿using FakeRentAPI.Identity;
+using FakeRentAPI.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace FakeRentAPI.Data
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext<AppIdentityUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options):base(options)
         {
         }
+
+        public DbSet<AppIdentityUser> AppIdentityUsers { get; set; }
         public DbSet<House> Houses { get; set; }
         public DbSet<HouseNumber> HouseNumbers { get; set; }
         public DbSet<LocalUser> LocalUsers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<House>().HasData(
                 new House
                 {

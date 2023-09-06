@@ -8,6 +8,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
+using FakeRentAPI.Identity;
 
 namespace FakeRentAPI
 {
@@ -18,8 +21,17 @@ namespace FakeRentAPI
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            builder.Services.AddControllers().AddNewtonsoftJson();
+            builder.Services.AddControllers(options =>
+            {
+                options.CacheProfiles.Add("Default30",
+                    new CacheProfile()
+                    {
+                        Duration = 30
+                    });
+            }).AddNewtonsoftJson();
             builder.Services.AddEndpointsApiExplorer();
+
+            //Swagger Configuration
             builder.Services.AddSwaggerGen(options =>
             {
                 //How the API is protected through the generated Swagger
@@ -50,6 +62,60 @@ namespace FakeRentAPI
                         new List<string>()
                     }
                 });
+                options.SwaggerDoc("v1",new OpenApiInfo
+                {
+                    Version = "v1.0",
+                    Title = "Fake Rent v1",
+                    Description = "Api to Rent Houses",
+                    TermsOfService = new Uri("https://example.com/terms"),
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Xlrware",
+                        Url = new Uri("https://xlrware.com")
+                    },
+                    License = new OpenApiLicense
+                    {
+                        Name = "License of App",
+                        Url = new Uri("https://xlrware.com")
+                    }
+                });
+                options.SwaggerDoc("v2", new OpenApiInfo
+                {
+                    Version = "v2.0",
+                    Title = "Fake Rent v2",
+                    Description = "Api to Rent Houses",
+                    TermsOfService = new Uri("https://example.com/terms"),
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Xlrware",
+                        Url = new Uri("https://xlrware.com")
+                    },
+                    License = new OpenApiLicense
+                    {
+                        Name = "License of App",
+                        Url = new Uri("https://xlrware.com")
+                    }
+                });
+            });
+
+            //Identity
+            builder.Services.AddIdentity<AppIdentityUser, AppIdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>();
+
+            //Caching
+            builder.Services.AddMemoryCache();
+
+            //Versioning
+            builder.Services.AddApiVersioning(options =>
+            {
+                options.AssumeDefaultVersionWhenUnspecified = true;
+                options.DefaultApiVersion = new ApiVersion(1, 0);
+                options.ReportApiVersions = true;
+            });
+            builder.Services.AddVersionedApiExplorer(options =>
+            {
+                options.GroupNameFormat = "'v'VVV";
+                options.SubstituteApiVersionInUrl = true;
             });
 
             //Repository injection
@@ -93,7 +159,11 @@ namespace FakeRentAPI
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
-                app.UseSwaggerUI();
+                app.UseSwaggerUI(options =>
+                {
+                    options.SwaggerEndpoint("/swagger/v1/swagger.json", "FakeRentV1");
+                    options.SwaggerEndpoint("/swagger/v2/swagger.json", "FakeRentV2");
+                });
             }
 
             app.UseHttpsRedirection();

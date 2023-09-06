@@ -23,7 +23,7 @@ namespace FakeRent.Web.Controllers
 		{
 			List<HouseDTO> list = new();
 
-			var response = await _houseService.GetAllAsync<APIResponse>();
+			var response = await _houseService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(StaticDetails.SessionToken));
 			if (response != null && response.IsSuccess)
 			{
 				list = JsonConvert.DeserializeObject<List<HouseDTO>>(Convert.ToString(response.Result));

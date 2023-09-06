@@ -27,7 +27,7 @@ namespace FakeRent.Web.Controllers
         public async Task<IActionResult> IndexHouseNumber()
         {
             List<HouseNumberDTO> list = new();
-            var response = await _houseNumberService.GetAllAsync<APIResponse>();
+            var response = await _houseNumberService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(StaticDetails.SessionToken));
             if (response != null && response.IsSuccess)
             {
                 list = JsonConvert.DeserializeObject<List<HouseNumberDTO>>(Convert.ToString(response.Result));
@@ -35,11 +35,11 @@ namespace FakeRent.Web.Controllers
             return View(list);
         }
 
-        [Authorize(Roles = StaticDetails.Role_Admin)]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateHouseNumber()
         {
             HouseNumberCreateViewModel createViewModel = new();
-			var response = await _houseService.GetAllAsync<APIResponse>();
+			var response = await _houseService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(StaticDetails.SessionToken));
 			if (response != null && response.IsSuccess)
 			{
 				createViewModel.HouseList = JsonConvert.DeserializeObject<List<HouseDTO>>
@@ -54,12 +54,12 @@ namespace FakeRent.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = StaticDetails.Role_Admin)]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateHouseNumber(HouseNumberCreateViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var response = await _houseNumberService.CreateAsync<APIResponse>(model.HouseNumber);
+                var response = await _houseNumberService.CreateAsync<APIResponse>(model.HouseNumber, HttpContext.Session.GetString(StaticDetails.SessionToken));
                 if (response != null && response.IsSuccess)
                 {
                     return RedirectToAction(nameof(IndexHouseNumber));
@@ -72,7 +72,7 @@ namespace FakeRent.Web.Controllers
                     }
                 }
             }
-            var resp = await _houseService.GetAllAsync<APIResponse>();
+            var resp = await _houseService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(StaticDetails.SessionToken));
             if (resp != null && resp.IsSuccess)
             {
                 model.HouseList = JsonConvert.DeserializeObject<List<HouseDTO>>
@@ -85,17 +85,17 @@ namespace FakeRent.Web.Controllers
             return View(model);
         }
 
-        [Authorize(Roles = StaticDetails.Role_Admin)]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateHouseNumber(int houseNo)
         {
             HouseNumberUpdateViewModel updateViewModel = new();
-            var response = await _houseNumberService.GetAsync<APIResponse>(houseNo);
+            var response = await _houseNumberService.GetAsync<APIResponse>(houseNo, HttpContext.Session.GetString(StaticDetails.SessionToken));
             if (response != null && response.IsSuccess)
             {
                 HouseNumberDTO model = JsonConvert.DeserializeObject<HouseNumberDTO>(Convert.ToString(response.Result));
                 updateViewModel.HouseNumber = _mapper.Map<HouseNumberUpdateDTO>(model);
             }
-            response = await _houseService.GetAllAsync<APIResponse>();
+            response = await _houseService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(StaticDetails.SessionToken));
             if (response != null && response.IsSuccess)
             {
                 updateViewModel.HouseList = JsonConvert.DeserializeObject<List<HouseDTO>>
@@ -111,12 +111,12 @@ namespace FakeRent.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = StaticDetails.Role_Admin)]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateHouseNumber(HouseNumberUpdateViewModel updateViewModel)
         {
             if (ModelState.IsValid)
             {
-                var response = await _houseNumberService.UpdateAsync<APIResponse>(updateViewModel.HouseNumber);
+                var response = await _houseNumberService.UpdateAsync<APIResponse>(updateViewModel.HouseNumber, HttpContext.Session.GetString(StaticDetails.SessionToken));
                 if (response != null && response.IsSuccess)
                 {
                     return RedirectToAction(nameof(IndexHouseNumber));
@@ -129,7 +129,7 @@ namespace FakeRent.Web.Controllers
                     }
                 }
             }
-            var resp = await _houseService.GetAllAsync<APIResponse>();
+            var resp = await _houseService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(StaticDetails.SessionToken));
             if (resp != null && resp.IsSuccess)
             {
                 updateViewModel.HouseList = JsonConvert.DeserializeObject<List<HouseDTO>>
@@ -142,17 +142,17 @@ namespace FakeRent.Web.Controllers
             return View(updateViewModel);
         }
 
-        [Authorize(Roles = StaticDetails.Role_Admin)]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteHouseNumber(int houseNo)
         {
             HouseNumberDeleteViewModel deleteViewModel = new();
-            var response = await _houseNumberService.GetAsync<APIResponse>(houseNo);
+            var response = await _houseNumberService.GetAsync<APIResponse>(houseNo, HttpContext.Session.GetString(StaticDetails.SessionToken));
             if (response != null && response.IsSuccess)
             {
                 HouseNumberDTO model = JsonConvert.DeserializeObject<HouseNumberDTO>(Convert.ToString(response.Result));
                 deleteViewModel.HouseNumber = model;
             }
-            response = await _houseService.GetAllAsync<APIResponse>();
+            response = await _houseService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(StaticDetails.SessionToken));
             if (response != null && response.IsSuccess)
             {
                 deleteViewModel.HouseList = JsonConvert.DeserializeObject<List<HouseDTO>>
@@ -168,10 +168,10 @@ namespace FakeRent.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = StaticDetails.Role_Admin)]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteHouseNumber(HouseNumberDeleteViewModel deleteViewModel)
         {
-            var response = await _houseNumberService.DeleteAsync<APIResponse>(deleteViewModel.HouseNumber.HouseNo);
+            var response = await _houseNumberService.DeleteAsync<APIResponse>(deleteViewModel.HouseNumber.HouseNo, HttpContext.Session.GetString(StaticDetails.SessionToken));
             if (response != null && response.IsSuccess)
             {
                 return RedirectToAction(nameof(IndexHouseNumber));
