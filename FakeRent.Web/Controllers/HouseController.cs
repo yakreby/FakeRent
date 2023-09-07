@@ -5,7 +5,6 @@ using FakeRent.Web.Services.IServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using System.Collections.Generic;
 
 namespace FakeRent.Web.Controllers
 {
@@ -30,7 +29,7 @@ namespace FakeRent.Web.Controllers
             return View(list);
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> CreateHouse()
         {
             return View();
@@ -38,7 +37,7 @@ namespace FakeRent.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> CreateHouse(HouseCreateDTO houseCreateDTO)
         {
             if (ModelState.IsValid)
@@ -53,7 +52,7 @@ namespace FakeRent.Web.Controllers
             return View(houseCreateDTO);
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> UpdateHouse(int houseId)
         {
             var response = await _houseService.GetAsync<APIResponse>(houseId, HttpContext.Session.GetString(StaticDetails.SessionToken));
@@ -67,7 +66,7 @@ namespace FakeRent.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> UpdateHouse(HouseUpdateDTO houseUpdateDTO)
         {
             if (ModelState.IsValid)
@@ -83,7 +82,7 @@ namespace FakeRent.Web.Controllers
             return View(houseUpdateDTO);
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteHouse(int houseId)
         {
             var response = await _houseService.GetAsync<APIResponse>(houseId, HttpContext.Session.GetString(StaticDetails.SessionToken));
@@ -97,7 +96,7 @@ namespace FakeRent.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteHouse(HouseDTO houseDTO)
         {
             var response = await _houseService.DeleteAsync<APIResponse>(houseDTO.Id, HttpContext.Session.GetString(StaticDetails.SessionToken));

@@ -7,13 +7,13 @@ namespace FakeRentAPI.Repository
     public class HouseRepository : Repository<House>, IHouseRepository
     {
         private readonly ApplicationDbContext _applicationDbContext;
-        public HouseRepository(ApplicationDbContext applicationDbContext):base(applicationDbContext)
+        public HouseRepository(ApplicationDbContext applicationDbContext) : base(applicationDbContext)
         {
             _applicationDbContext = applicationDbContext;
         }
         public async Task<House> UpdateAsync(House entity)
         {
-            entity.UpdatedDate = DateTime.Now;  
+            entity.UpdatedDate = DateTime.Now;
             _applicationDbContext.Houses.Update(entity);
             await _applicationDbContext.SaveChangesAsync();
             return entity;

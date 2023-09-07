@@ -9,7 +9,7 @@ namespace FakeRentAPI
     {
         public MappingConfig()
         {
-            CreateMap<House,HouseDTO>();
+            CreateMap<House, HouseDTO>();
             CreateMap<HouseDTO, House>();
             CreateMap<House, HouseCreateDTO>().ReverseMap();
             CreateMap<House, HouseUpdateDTO>().ReverseMap();

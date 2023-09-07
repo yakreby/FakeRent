@@ -1,12 +1,8 @@
 ﻿using AutoMapper;
-using FakeRentAPI.Models.Dto;
+using FakeRentAPI.Controllers.v1;
 using FakeRentAPI.Models;
 using FakeRentAPI.Repository.IRepository;
-using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-using FakeRent.Utility;
-using Microsoft.AspNetCore.Authorization;
-using FakeRentAPI.Controllers.v1;
 
 namespace FakeRentAPI.Controllers.v2
 {

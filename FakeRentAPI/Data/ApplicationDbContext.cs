@@ -7,7 +7,7 @@ namespace FakeRentAPI.Data
 {
     public class ApplicationDbContext : IdentityDbContext<AppIdentityUser>
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options):base(options)
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
         }
 

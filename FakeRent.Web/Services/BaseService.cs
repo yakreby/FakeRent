@@ -1,11 +1,9 @@
-﻿using FakeRent.Web.Models;
+﻿using FakeRent.Utility;
+using FakeRent.Web.Models;
 using FakeRent.Web.Services.IServices;
 using Newtonsoft.Json;
-using System.Text;
-using System.Text.Json.Serialization;
-using FakeRent.Utility;
-using Humanizer;
 using System.Net.Http.Headers;
+using System.Text;
 
 namespace FakeRent.Web.Services
 {
@@ -31,11 +29,11 @@ namespace FakeRent.Web.Services
                 message.Headers.Add("Accept", "application/json");
                 message.RequestUri = new Uri(apiRequest.Url);
                 //If creating or updating operations will be performed, we need data. (Post and put actions)
-                if(apiRequest.Data != null)
+                if (apiRequest.Data != null)
                 {
                     //Serializing data for passing through Request
                     message.Content = new StringContent(JsonConvert.SerializeObject(apiRequest.Data),
-                        Encoding.UTF8, "application/json"); 
+                        Encoding.UTF8, "application/json");
                 }
                 //When sending a request we should assign it's Http type to RequestMessage object's Method property
                 switch (apiRequest.ApiType)
@@ -72,7 +70,7 @@ namespace FakeRent.Web.Services
                 {
                     APIResponse ApiResponse = JsonConvert.DeserializeObject<APIResponse>(apiContent);
                     //If we got an error message in api, should be modify IsSuccess's value
-                    if(ApiResponse!=null && (httpResponseMessage.StatusCode == System.Net.HttpStatusCode.BadRequest ||
+                    if (ApiResponse != null && (httpResponseMessage.StatusCode == System.Net.HttpStatusCode.BadRequest ||
                         httpResponseMessage.StatusCode == System.Net.HttpStatusCode.NotFound))
                     {
                         httpResponseMessage.StatusCode = System.Net.HttpStatusCode.BadRequest;
@@ -92,7 +90,7 @@ namespace FakeRent.Web.Services
                 var APIResponse = JsonConvert.DeserializeObject<T>(apiContent);
                 return APIResponse;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 var dto = new APIResponse
                 {

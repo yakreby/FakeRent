@@ -7,8 +7,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
-using System.Collections.Generic;
-using System.Reflection;
 
 namespace FakeRent.Web.Controllers
 {
@@ -35,26 +33,26 @@ namespace FakeRent.Web.Controllers
             return View(list);
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> CreateHouseNumber()
         {
             HouseNumberCreateViewModel createViewModel = new();
-			var response = await _houseService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(StaticDetails.SessionToken));
-			if (response != null && response.IsSuccess)
-			{
-				createViewModel.HouseList = JsonConvert.DeserializeObject<List<HouseDTO>>
+            var response = await _houseService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(StaticDetails.SessionToken));
+            if (response != null && response.IsSuccess)
+            {
+                createViewModel.HouseList = JsonConvert.DeserializeObject<List<HouseDTO>>
                     (Convert.ToString(response.Result)).Select(x => new SelectListItem
                     {
                         Text = x.Name,
                         Value = x.Id.ToString()
                     });
-			}
-			return View(createViewModel);   
+            }
+            return View(createViewModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> CreateHouseNumber(HouseNumberCreateViewModel model)
         {
             if (ModelState.IsValid)
@@ -66,7 +64,7 @@ namespace FakeRent.Web.Controllers
                 }
                 else
                 {
-                    if(response.ErrorMessages.Count > 0)
+                    if (response.ErrorMessages.Count > 0)
                     {
                         ModelState.AddModelError("ErrorMessages", response.ErrorMessages.FirstOrDefault());
                     }
@@ -85,7 +83,7 @@ namespace FakeRent.Web.Controllers
             return View(model);
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> UpdateHouseNumber(int houseNo)
         {
             HouseNumberUpdateViewModel updateViewModel = new();
@@ -111,7 +109,7 @@ namespace FakeRent.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> UpdateHouseNumber(HouseNumberUpdateViewModel updateViewModel)
         {
             if (ModelState.IsValid)
@@ -142,7 +140,7 @@ namespace FakeRent.Web.Controllers
             return View(updateViewModel);
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteHouseNumber(int houseNo)
         {
             HouseNumberDeleteViewModel deleteViewModel = new();
@@ -168,7 +166,7 @@ namespace FakeRent.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteHouseNumber(HouseNumberDeleteViewModel deleteViewModel)
         {
             var response = await _houseNumberService.DeleteAsync<APIResponse>(deleteViewModel.HouseNumber.HouseNo, HttpContext.Session.GetString(StaticDetails.SessionToken));

@@ -1,16 +1,14 @@
 using FakeRentAPI.Data;
+using FakeRentAPI.Identity;
 using FakeRentAPI.Repository;
 using FakeRentAPI.Repository.IRepository;
-using Microsoft.EntityFrameworkCore;
-using Serilog;
-using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using Microsoft.OpenApi.Models;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
-using FakeRentAPI.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using System.Text;
 
 namespace FakeRentAPI
 {
@@ -62,7 +60,7 @@ namespace FakeRentAPI
                         new List<string>()
                     }
                 });
-                options.SwaggerDoc("v1",new OpenApiInfo
+                options.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Version = "v1.0",
                     Title = "Fake Rent v1",
@@ -163,7 +161,6 @@ namespace FakeRentAPI
             //Mapping
             builder.Services.AddAutoMapper(typeof(MappingConfig));
 
-            
             //Logging
             //Log.Logger = new LoggerConfiguration().MinimumLevel.Debug()
             //    .WriteTo.File("log / logs.txt", rollingInterval: RollingInterval.Day).CreateLogger();

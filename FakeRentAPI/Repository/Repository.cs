@@ -1,5 +1,4 @@
 ﻿using FakeRentAPI.Data;
-using FakeRentAPI.Models;
 using FakeRentAPI.Repository.IRepository;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,7 +13,7 @@ namespace FakeRentAPI.Repository
         public Repository(ApplicationDbContext applicationDbContext)
         {
             _applicationDbContext = applicationDbContext;
-			this.dbSet = _applicationDbContext.Set<T>();
+            this.dbSet = _applicationDbContext.Set<T>();
         }
         public async Task CreateAsync(T entity)
         {
@@ -33,9 +32,9 @@ namespace FakeRentAPI.Repository
             {
                 query = query.Where(filter);
             }
-            if(includeProperties != null)
+            if (includeProperties != null)
             {
-                foreach (var property in includeProperties.Split(new char[] {','}, StringSplitOptions.RemoveEmptyEntries))
+                foreach (var property in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
                 {
                     query = query.Include(property);
                 }
@@ -51,22 +50,22 @@ namespace FakeRentAPI.Repository
             {
                 query = query.Where(filter);
             }
-            if(pageSize > 0)
+            if (pageSize > 0)
             {
-                if(pageSize > 100)
+                if (pageSize > 100)
                 {
                     pageSize = 100;
                 }
-                query = query.Skip(pageSize * (pageNumber -1)).Take(pageSize);
+                query = query.Skip(pageSize * (pageNumber - 1)).Take(pageSize);
             }
-			if (includeProperties != null)
-			{
-				foreach (var property in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-				{
-					query = query.Include(property);
-				}   
-			}
-			return await query.ToListAsync();
+            if (includeProperties != null)
+            {
+                foreach (var property in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(property);
+                }
+            }
+            return await query.ToListAsync();
         }
 
         public async Task RemoveAsync(T entity)
@@ -86,5 +85,5 @@ namespace FakeRentAPI.Repository
             dbSet.Update(entity);
             await SaveAsync();
         }
-	}
+    }
 }

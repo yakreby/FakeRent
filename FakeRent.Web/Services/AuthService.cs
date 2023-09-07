@@ -8,7 +8,7 @@ namespace FakeRent.Web.Services
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private string authUrl;
-        public AuthService(IHttpClientFactory httpClientFactory, IConfiguration configuration):base(httpClientFactory)
+        public AuthService(IHttpClientFactory httpClientFactory, IConfiguration configuration) : base(httpClientFactory)
         {
             _httpClientFactory = httpClientFactory;
             authUrl = configuration.GetValue<string>("ServiceUrls:FakeRentAPI");

@@ -1,5 +1,4 @@
-﻿using FakeRentAPI.Models;
-using FakeRentAPI.Models.Dto;
+﻿using FakeRentAPI.Models.Dto;
 
 namespace FakeRentAPI.Repository.IRepository
 {

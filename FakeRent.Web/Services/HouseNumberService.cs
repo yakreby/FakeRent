@@ -9,7 +9,7 @@ namespace FakeRent.Web.Services
         private readonly string apiURl;
         private readonly IHttpClientFactory _httpClientFactory;
         //Base service requires HttpClientFactory, that why we use :base statement
-        public HouseNumberService(IHttpClientFactory httpClientFactory, IConfiguration configuration):base(httpClientFactory)
+        public HouseNumberService(IHttpClientFactory httpClientFactory, IConfiguration configuration) : base(httpClientFactory)
         {
             _httpClientFactory = httpClientFactory;
             //Getting url from appsettings.json

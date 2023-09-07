@@ -32,7 +32,7 @@ namespace FakeRent.Web.Controllers
             if (ModelState.IsValid)
             {
                 APIResponse response = await _authService.LoginAsync<APIResponse>(loginRequestDTO);
-                if(response != null && response.IsSuccess == true)
+                if (response != null && response.IsSuccess == true)
                 {
                     LoginResponseDTO model = JsonConvert.DeserializeObject<LoginResponseDTO>(Convert.ToString(response.Result));
 
@@ -47,7 +47,7 @@ namespace FakeRent.Web.Controllers
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
 
                     HttpContext.Session.SetString(StaticDetails.SessionToken, model.Token);
-                    return RedirectToAction("Index","Home");
+                    return RedirectToAction("Index", "Home");
                 }
                 else
                 {
@@ -70,11 +70,10 @@ namespace FakeRent.Web.Controllers
             if (ModelState.IsValid)
             {
                 APIResponse result = await _authService.RegisterAsync<APIResponse>(registerationRequestDTO);
-                if(result != null && result.IsSuccess)
+                if (result != null && result.IsSuccess)
                 {
                     return RedirectToAction("Login");
                 }
-            
             }
             return View(registerationRequestDTO);
         }

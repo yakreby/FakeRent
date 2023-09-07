@@ -1,12 +1,10 @@
 ﻿using AutoMapper;
-using FakeRentAPI.Models.Dto;
 using FakeRentAPI.Models;
+using FakeRentAPI.Models.Dto;
 using FakeRentAPI.Repository.IRepository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-using FakeRent.Utility;
-using Microsoft.AspNetCore.Authorization;
-using System.Reflection.PortableExecutable;
 using System.Text.Json;
 
 namespace FakeRentAPI.Controllers.v1
@@ -38,7 +36,7 @@ namespace FakeRentAPI.Controllers.v1
             try
             {
                 IEnumerable<HouseNumber> houseNumbers = await _houseNumberRepository.GetAllAsync(includeProperties: "House",
-                    pageSize:pageSize, pageNumber:pageNumber);
+                    pageSize: pageSize, pageNumber: pageNumber);
                 Pagination pagination = new() { PageNumber = pageNumber, PageSize = pageSize };
                 Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(pagination));
                 _response.Result = _mapper.Map<List<HouseNumberDTO>>(houseNumbers);
@@ -89,7 +87,7 @@ namespace FakeRentAPI.Controllers.v1
             return _response;
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "admin")]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -131,7 +129,7 @@ namespace FakeRentAPI.Controllers.v1
             return _response;
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "admin")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -169,7 +167,7 @@ namespace FakeRentAPI.Controllers.v1
             return _response;
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "admin")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [HttpPut("{id:int}", Name = "UpdateHouseNumber")]
@@ -205,7 +203,7 @@ namespace FakeRentAPI.Controllers.v1
             return _response;
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "admin")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]

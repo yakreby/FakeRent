@@ -1,6 +1,6 @@
-﻿using FakeRentAPI.Data;
+﻿using AutoMapper;
+using FakeRentAPI.Data;
 using FakeRentAPI.Identity;
-using FakeRentAPI.Models;
 using FakeRentAPI.Models.Dto;
 using FakeRentAPI.Repository.IRepository;
 using Microsoft.AspNetCore.Identity;
@@ -8,8 +8,6 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Microsoft.AspNetCore;
-using AutoMapper;
 
 namespace FakeRentAPI.Repository
 {
@@ -21,7 +19,7 @@ namespace FakeRentAPI.Repository
         private readonly IMapper _mapper;
         private string secretKey;
         public UserRepository(ApplicationDbContext applicationDbContext, IConfiguration configuration,
-            UserManager<AppIdentityUser> userManager,IMapper mapper, RoleManager<IdentityRole> roleManager)
+            UserManager<AppIdentityUser> userManager, IMapper mapper, RoleManager<IdentityRole> roleManager)
         {
             _applicationDbContext = applicationDbContext;
             _userManager = userManager;
@@ -77,7 +75,7 @@ namespace FakeRentAPI.Repository
                     new Claim(ClaimTypes.Role, roles.FirstOrDefault())
                 }),
                 Expires = DateTime.UtcNow.AddDays(7),
-                SigningCredentials = new(new SymmetricSecurityKey(key),SecurityAlgorithms.HmacSha256Signature)
+                SigningCredentials = new(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
 
             //Generating token
@@ -103,7 +101,7 @@ namespace FakeRentAPI.Repository
             };
             try
             {
-                var result = await _userManager.CreateAsync(user,registerationRequestDTO.Password);
+                var result = await _userManager.CreateAsync(user, registerationRequestDTO.Password);
                 if (result.Succeeded)
                 {
                     if (!_roleManager.RoleExistsAsync("admin").GetAwaiter().GetResult())

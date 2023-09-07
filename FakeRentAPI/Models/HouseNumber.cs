@@ -5,7 +5,7 @@ namespace FakeRentAPI.Models
 {
     public class HouseNumber
     {
-        [Key,DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int HouseNo { get; set; }
         [ForeignKey("House")]
         public int HouseId { get; set; }

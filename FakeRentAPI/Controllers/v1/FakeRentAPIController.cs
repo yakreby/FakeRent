@@ -1,13 +1,10 @@
 ﻿using AutoMapper;
-using FakeRent.Utility;
-using FakeRentAPI.Data;
 using FakeRentAPI.Models;
 using FakeRentAPI.Models.Dto;
 using FakeRentAPI.Repository.IRepository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace FakeRentAPI.Controllers.v1
 {
@@ -81,7 +78,7 @@ namespace FakeRentAPI.Controllers.v1
             return _response;
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "admin")]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -118,7 +115,7 @@ namespace FakeRentAPI.Controllers.v1
             return _response;
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "admin")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -156,7 +153,7 @@ namespace FakeRentAPI.Controllers.v1
             return _response;
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "admin")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [HttpPut("{id:int}", Name = "UpdateHouse")]
@@ -188,7 +185,7 @@ namespace FakeRentAPI.Controllers.v1
             return _response;
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "admin")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
