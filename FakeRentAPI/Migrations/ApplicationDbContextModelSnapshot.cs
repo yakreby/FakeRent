@@ -131,7 +131,7 @@ namespace FakeRentAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Houses");
+                    b.ToTable("Houses", (string)null);
 
                     b.HasData(
                         new
@@ -196,7 +196,7 @@ namespace FakeRentAPI.Migrations
 
                     b.HasIndex("HouseId");
 
-                    b.ToTable("HouseNumbers");
+                    b.ToTable("HouseNumbers", (string)null);
                 });
 
             modelBuilder.Entity("FakeRentAPI.Models.LocalUser", b =>
@@ -221,7 +221,7 @@ namespace FakeRentAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("LocalUsers");
+                    b.ToTable("LocalUsers", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

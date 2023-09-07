@@ -48,7 +48,7 @@ namespace FakeRentAPI.Controllers.v1
                 return BadRequest(_response);
             }
 
-            var user = _userRepository.Register(registerationRequestDTO);
+            var user = await _userRepository.Register(registerationRequestDTO);
             if (user == null)
             {
                 _response.StatusCode = HttpStatusCode.BadRequest;
@@ -56,7 +56,6 @@ namespace FakeRentAPI.Controllers.v1
                 _response.ErrorMessages.Add("Error while registering");
                 return BadRequest(_response);
             }
-            _userRepository.Register(registerationRequestDTO);
             _response.StatusCode = HttpStatusCode.OK;
             _response.IsSuccess = true;
 

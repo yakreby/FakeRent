@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FakeRentAPI.Identity;
 using FakeRentAPI.Models;
 using FakeRentAPI.Models.Dto;
 
@@ -16,6 +17,7 @@ namespace FakeRentAPI
             CreateMap<HouseNumber, HouseNumberDTO>().ReverseMap();
             CreateMap<HouseNumber, HouseNumberCreateDTO>().ReverseMap();
             CreateMap<HouseNumber, HouseNumberUpdateDTO>().ReverseMap();
+            CreateMap<AppIdentityUser, UserDTO>().ReverseMap();
         }
     }
 }

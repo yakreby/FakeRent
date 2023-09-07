@@ -99,8 +99,24 @@ namespace FakeRentAPI
             });
 
             //Identity
-            builder.Services.AddIdentity<AppIdentityUser, AppIdentityRole>()
+            builder.Services.AddIdentity<AppIdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+            {
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+            });
+
+            //Dependency Injection for Identity
+            builder.Services.Configure<IdentityOptions>(options =>
+            {
+                options.Password.RequireDigit = true;
+                options.Password.RequireUppercase = false;
+                options.Password.RequiredLength = 3;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Lockout.MaxFailedAccessAttempts = 5;
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                options.User.RequireUniqueEmail = true;
+            });
 
             //Caching
             builder.Services.AddMemoryCache();
@@ -121,7 +137,8 @@ namespace FakeRentAPI
             //Repository injection
             builder.Services.AddScoped<IHouseRepository, HouseRepository>();
             builder.Services.AddScoped<IHouseNumberRepository, HouseNumberRepository>();
-            builder.Services.AddScoped<IUserRepository, UserReposiitory>();
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
+
 
             //Retrieve secret key
             var key = builder.Configuration.GetValue<string>("ApiSettings:Secret");
@@ -146,10 +163,7 @@ namespace FakeRentAPI
             //Mapping
             builder.Services.AddAutoMapper(typeof(MappingConfig));
 
-            builder.Services.AddDbContext<ApplicationDbContext>(options =>
-            {
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-            });
+            
             //Logging
             //Log.Logger = new LoggerConfiguration().MinimumLevel.Debug()
             //    .WriteTo.File("log / logs.txt", rollingInterval: RollingInterval.Day).CreateLogger();

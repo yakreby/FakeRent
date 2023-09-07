@@ -8,20 +8,27 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.AspNetCore;
+using AutoMapper;
 
 namespace FakeRentAPI.Repository
 {
-    public class UserReposiitory : IUserRepository
+    public class UserRepository : IUserRepository
     {
         private readonly ApplicationDbContext _applicationDbContext;
         private readonly UserManager<AppIdentityUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IMapper _mapper;
         private string secretKey;
-        public UserReposiitory(ApplicationDbContext applicationDbContext, IConfiguration configuration,
-            UserManager<AppIdentityUser> userManager)
+        public UserRepository(ApplicationDbContext applicationDbContext, IConfiguration configuration,
+            UserManager<AppIdentityUser> userManager,IMapper mapper, RoleManager<IdentityRole> roleManager)
         {
             _applicationDbContext = applicationDbContext;
             _userManager = userManager;
             secretKey = configuration.GetValue<string>("ApiSettings:Secret");
+            _roleManager = roleManager;
+            _mapper = mapper;
+
         }
         public bool IsUniqueUser(string username)
         {
@@ -58,7 +65,7 @@ namespace FakeRentAPI.Repository
             }
 
             //If user found and password is valid, generate JWT Token based on role
-            var role = _userManager.GetRolesAsync(user);
+            var roles = await _userManager.GetRolesAsync(user);
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(secretKey);
 
@@ -66,8 +73,8 @@ namespace FakeRentAPI.Repository
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim(ClaimTypes.Name, user.Id.ToString()),
-                    new Claim(ClaimTypes.Role, user.Role)
+                    new Claim(ClaimTypes.Name, user.UserName.ToString()),
+                    new Claim(ClaimTypes.Role, roles.FirstOrDefault())
                 }),
                 Expires = DateTime.UtcNow.AddDays(7),
                 SigningCredentials = new(new SymmetricSecurityKey(key),SecurityAlgorithms.HmacSha256Signature)
@@ -78,25 +85,43 @@ namespace FakeRentAPI.Repository
             LoginResponseDTO loginResponseDTO = new()
             {
                 Token = tokenHandler.WriteToken(token),
-                User = user
+                User = _mapper.Map<UserDTO>(user)
+                //Role = roles.FirstOrDefault()
             };
             return loginResponseDTO;
         }
 
-        public async Task<LocalUser> Register(RegisterationRequestDTO registerationRequestDTO)
+        public async Task<UserDTO> Register(RegisterationRequestDTO registerationRequestDTO)
         {
-            LocalUser user = new()
+            AppIdentityUser user = new()
             {
                 UserName = registerationRequestDTO.UserName,
-                Password = registerationRequestDTO.Password,
+                Email = registerationRequestDTO.UserName,
+                NormalizedEmail = registerationRequestDTO.UserName.ToUpper(),
                 Name = registerationRequestDTO.Name,
-                Role = registerationRequestDTO.Role,
+                City = registerationRequestDTO.City
             };
+            try
+            {
+                var result = await _userManager.CreateAsync(user,registerationRequestDTO.Password);
+                if (result.Succeeded)
+                {
+                    if (!_roleManager.RoleExistsAsync("admin").GetAwaiter().GetResult())
+                    {
+                        await _roleManager.CreateAsync(new IdentityRole("admin"));
+                        await _roleManager.CreateAsync(new IdentityRole("customer"));
+                    }
+                    await _userManager.AddToRoleAsync(user, "admin");
+                    var userToReturn = _applicationDbContext.AppIdentityUsers
+                        .FirstOrDefault(x => x.UserName == registerationRequestDTO.UserName);
 
-            _applicationDbContext.LocalUsers.Add(user);
-            await _applicationDbContext.SaveChangesAsync();
-            user.Password = "";
-            return user;
+                    return _mapper.Map<UserDTO>(userToReturn);
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+            return new UserDTO();
         }
     }
 }
